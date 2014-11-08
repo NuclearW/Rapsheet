@@ -12,29 +12,28 @@ import org.bukkit.command.CommandSender;
 import com.nuclearw.rapsheet.Rapsheet;
 import com.nuclearw.rapsheet.Record;
 
-public class LookupCommandExecutor extends RapsheetCommand implements CommandExecutor {
-	public LookupCommandExecutor(Rapsheet plugin) {
+public class MeCommandExecutor extends RapsheetCommand implements CommandExecutor {
+	public MeCommandExecutor(Rapsheet plugin) {
 		super(plugin);
 	}
 
 	@Override
 	public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
-		if(args.length < 2) {
+		if(args.length < 1) {
 			printArgsError(args);
-			sender.sendMessage(ChatColor.GOLD + "/" + label + " lookup <player>: " + ChatColor.WHITE + "Look up a player's records.");
-			sender.sendMessage(ChatColor.GOLD + "/" + label + " lookup <player> <charge#>: " + ChatColor.WHITE + "Look at a specific charge on a player.");
+			sender.sendMessage(ChatColor.GOLD + "/" + label + " me: " + ChatColor.WHITE + "See your own RAP sheet.");
+			sender.sendMessage(ChatColor.GOLD + "/" + label + " me <charge#>: " + ChatColor.WHITE + "See a specific charge on your RAP sheet.");
 			return true;
 		}
 
 		SimpleDateFormat format = new SimpleDateFormat("MMM d, yyyy h:mm");
 
-		String target = findTarget(args[1]);
-
-		if(args.length == 2) {
+		String target = sender.getName();
+		if(args.length == 1) {
 			List<Record> found = Rapsheet.getManager().getCharges(target);
 
 			if(found == null || found.isEmpty()) {
-				sender.sendMessage(COULD_NOT_FIND_PLAYER);
+				sender.sendMessage(ChatColor.RED + "You don't have any records!");
 				return true;
 			}
 
@@ -82,14 +81,14 @@ public class LookupCommandExecutor extends RapsheetCommand implements CommandExe
 			}
 		}
 
-		if(args.length == 3) {
+		if(args.length == 2) {
 			int chargeId = -1;
 
 			try {
-				chargeId = Integer.valueOf(args[2]);
+				chargeId = Integer.valueOf(args[1]);
 			} catch (NumberFormatException ex) {
-				sender.sendMessage(ChatColor.GOLD + "/" + label + " lookup <player>: " + ChatColor.WHITE + "Look up a player's records.");
-				sender.sendMessage(ChatColor.GOLD + "/" + label + " lookup <player> <charge#>: " + ChatColor.WHITE + "Look at a specific charge on a player.");
+				sender.sendMessage(ChatColor.GOLD + "/" + label + " me: " + ChatColor.WHITE + "See your own RAP sheet.");
+				sender.sendMessage(ChatColor.GOLD + "/" + label + " me <charge#>: " + ChatColor.WHITE + "See a specific charge on your RAP sheet.");
 				return true;
 			}
 
